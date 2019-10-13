@@ -1,6 +1,7 @@
 package com.zalesskyi.android.blechat.bluetooth.ble.peripheral
 
 import android.bluetooth.*
+import android.bluetooth.BluetoothGatt.GATT_SUCCESS
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
@@ -15,7 +16,7 @@ import com.zalesskyi.android.blechat.bluetooth.ble.BleProvider
 import com.zalesskyi.android.blechat.bluetooth.ble.BleProviderCallback
 import java.lang.ref.WeakReference
 
-class PeripheralBleProvider(private val context: Context,
+class PeripheralBleProvider(context: Context,
                             callback: BleProviderCallback) : BleProvider {
 
     companion object {
@@ -71,8 +72,11 @@ class PeripheralBleProvider(private val context: Context,
                                                   responseNeeded: Boolean,
                                                   offset: Int,
                                                   value: ByteArray?) {
-            value?.let {
+            value?.takeIf { characteristic?.uuid == CHARACTERISTIC_MESSAGE_UUID }?.let {
                 callbackRef.get()?.onMessageArrived(it)
+                if (responseNeeded) {
+                    gattServer?.sendResponse(device, requestId, GATT_SUCCESS, 0, null)
+                }
             }
         }
     }

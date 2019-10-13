@@ -1,52 +1,45 @@
 package com.zalesskyi.android.blechat.bluetooth
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.zalesskyi.android.blechat.bluetooth.ble.BleMode
-import com.zalesskyi.android.blechat.bluetooth.ble.BleProvider
-import com.zalesskyi.android.blechat.bluetooth.ble.BleProviderCallback
+import com.cleveroad.bootstrap.kotlin_rx_bus.RxBus
+import com.zalesskyi.android.blechat.bluetooth.ble.*
 import com.zalesskyi.android.blechat.bluetooth.ble.central.CentralBleProvider
 import com.zalesskyi.android.blechat.bluetooth.ble.peripheral.PeripheralBleProvider
-
-interface TempCallback {
-
-    fun onMessage(message: String)
-}
+import com.zalesskyi.android.blechat.bluetooth.events.*
 
 interface BluetoothProvider {
-
-    fun send(message: String)   // todo temp
 
     fun connecting()
 
     fun stopConnecting()
 }
 
-class BluetoothProviderImpl(mode: BleMode, context: Context, callback: TempCallback) : BluetoothProvider {
-
-    companion object {
-        private val TAG = BluetoothProviderImpl::class.java.simpleName
-    }
+class BluetoothProviderImpl(mode: BleMode, context: Context) : BluetoothProvider {
 
     private val callback = object : BleProviderCallback {
 
         override fun onConnectionFail(errorCode: Int) {
-            Log.i(TAG, "onConnectionFail")
+            when (errorCode) {
+                SCAN_FAILED, GATT_SERVICE_NOT_FOUND -> reconnect()
+                ADVERTISING_NOT_SUPPORTED -> dispatchAdvertisingNotSupportedEvent()
+            }
         }
 
         override fun onConnectionEstablished() {
-            Log.i(TAG, "onConnectionEstablished")
+            dispatchConnectedEvent()
         }
 
         override fun onMessageArrived(message: ByteArray) {
-            Log.i(TAG, "onMessageArrived: ${String(message)}")
-            Handler(Looper.getMainLooper()).post { callback.onMessage(String(message)) }
+            dispatchReceivedEvent(String(message))
         }
 
         override fun onConnectionLost(errorCode: Int) {
-            Log.i(TAG, "onConnectionLost")
+            if (errorCode == GATT_ERROR) reconnect()
+            dispatchDisconnectedEvent()
         }
     }
 
@@ -54,6 +47,7 @@ class BluetoothProviderImpl(mode: BleMode, context: Context, callback: TempCallb
 
     init {
         bleProvider = getBleProvider(mode, context)
+        handleSentEvent()
     }
 
     override fun connecting() {
@@ -67,8 +61,36 @@ class BluetoothProviderImpl(mode: BleMode, context: Context, callback: TempCallb
         }
     }
 
-    override fun send(message: String) {
+    private fun send(message: String) {
         bleProvider?.sendMessage(message.toByteArray())
+    }
+
+    @SuppressLint("CheckResult")
+    private fun handleSentEvent() {
+        RxBus.filter(MessageSentEvent::class.java)
+            .map { it.message }
+            .subscribe { send(it) }
+    }
+
+    private fun dispatchReceivedEvent(message: String) {
+        RxBus.send(MessageReceivedEvent(message))
+    }
+
+    private fun dispatchAdvertisingNotSupportedEvent() {
+        RxBus.send(AdvertisingNotSupportedEvent())
+    }
+
+    private fun dispatchConnectedEvent() {
+        RxBus.send(ConnectedEvent())
+    }
+
+    private fun dispatchDisconnectedEvent() {
+        RxBus.send(DisconnectedEvent())
+    }
+
+    private fun reconnect() {
+        stopConnecting()
+        connecting()
     }
 
     private fun getBleProvider(mode: BleMode, context: Context): BleProvider = when (mode) {
