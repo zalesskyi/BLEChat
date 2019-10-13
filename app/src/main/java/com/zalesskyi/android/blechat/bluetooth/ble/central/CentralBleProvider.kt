@@ -11,10 +11,9 @@ import android.os.*
 import android.util.Log
 import com.zalesskyi.android.blechat.CHARACTERISTIC_MESSAGE_UUID
 import com.zalesskyi.android.blechat.CHAT_SERVICE_UUID
+import com.zalesskyi.android.blechat.PAIRING_DELAY_MS
 import com.zalesskyi.android.blechat.SCAN_REPORT_DELAY
-import com.zalesskyi.android.blechat.bluetooth.ble.BleProvider
-import com.zalesskyi.android.blechat.bluetooth.ble.BleProviderCallback
-import com.zalesskyi.android.blechat.bluetooth.ble.SCAN_FAILED
+import com.zalesskyi.android.blechat.bluetooth.ble.*
 import java.lang.ref.WeakReference
 
 class CentralBleProvider(private val context: Context,
@@ -30,6 +29,8 @@ class CentralBleProvider(private val context: Context,
     private var currentGatt: BluetoothGatt? = null
 
     private var bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+
+    private var isDisconnectApproved = false
 
     private val gattCallback = object : BluetoothGattCallback() {
 
@@ -48,7 +49,8 @@ class CentralBleProvider(private val context: Context,
                         Log.i(TAG, "state disconnected $status")
                         currentGatt = null
                         close()
-                        callbackRef.get()?.onConnectionLost(0)
+                        callbackRef.get()?.onConnectionLost(
+                              NO_ERROR.takeIf { isDisconnectApproved } ?: GATT_ERROR)
                     }
                     else -> Unit
                 }
@@ -62,8 +64,11 @@ class CentralBleProvider(private val context: Context,
             }
             Log.i(TAG, "services: ${gatt?.services?.map { it.uuid }}")
             gatt?.getService(CHAT_SERVICE_UUID)?.let {
+                it.getCharacteristic(CHARACTERISTIC_MESSAGE_UUID)?.let { messageCharacteristic ->
+                    currentGatt?.setCharacteristicNotification(messageCharacteristic, true)
+                }
                 Log.i(TAG, "Chat service found")
-            } ?: Log.i(TAG, "Chat service not found")
+            } ?: callbackRef.get()?.onConnectionFail(GATT_SERVICE_NOT_FOUND)
             callbackRef.get()?.onConnectionEstablished()
         }
 
@@ -89,11 +94,11 @@ class CentralBleProvider(private val context: Context,
 
         override fun onScanFailed(errorCode: Int) {
             callbackRef.get()?.onConnectionFail(SCAN_FAILED)
-            stopLookForConnection()
         }
     }
 
     override fun lookForConnection() {
+        isDisconnectApproved = false
         val scanSettings = ScanSettings.Builder()
               .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
               .apply {
@@ -115,6 +120,7 @@ class CentralBleProvider(private val context: Context,
     }
 
     override fun disconnect() {
+        isDisconnectApproved = true
         currentGatt?.run {
             clearServicesCache()
             disconnect()
@@ -135,7 +141,7 @@ class CentralBleProvider(private val context: Context,
         when {
             bondState == BluetoothDevice.BOND_NONE -> action()
             bondState == BluetoothDevice.BOND_BONDED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> action()
-            else -> Handler().postDelayed({ onBond(action) }, 1000)
+            else -> Handler().postDelayed({ onBond(action) }, PAIRING_DELAY_MS)
         }
     }
 

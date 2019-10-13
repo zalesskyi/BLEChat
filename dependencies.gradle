@@ -1,0 +1,112 @@
+ext {
+    // versions are relevant for 11 april 2019
+    compileSdkVersion = 28
+    minSdkVersion = 21
+    buildToolsVersion = '28.0.3'
+    targetSdkVersion = 28
+
+    archVersion = "2.0.0"
+    supportVersion = "1.1.0-alpha05"
+    material = "1.1.0-alpha06"
+    constraintlayoutVersion = "1.1.3"
+    multiDexVersion = "2.0.1"
+    supportDependencies = [
+            kotlin            : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+            appCompat         : "androidx.appcompat:appcompat:$supportVersion",
+            recyclerView      : "androidx.recyclerview:recyclerview:$supportVersion",
+            design            : "com.google.android.material:material:$material",
+            lifecycleExtension: "androidx.lifecycle:lifecycle-extensions:$archVersion",
+            constraintlayout  : "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion",
+            multiDex          : "androidx.multidex:multidex:$multiDexVersion",
+    ]
+
+    rxJava2Version = '2.2.9'
+    rxKotlinVersion = '2.3.0'
+    rxDependencies = [
+            rxJava2 : "io.reactivex.rxjava2:rxjava:$rxJava2Version",
+            rxKotlin: "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+    ]
+
+    bootstrapVersion = "1.0.6"
+    bootstrapDependencies = [
+            core       : "com.cleveroad.bootstrap:kotlin-core:$bootstrapVersion",
+            validators : "com.cleveroad.bootstrap:kotlin-validators:$bootstrapVersion",
+            rxBus      : "com.cleveroad.bootstrap:kotlin-rx-bus:$bootstrapVersion",
+            ext        : "com.cleveroad.bootstrap:kotlin-ext:$bootstrapVersion",
+            gps        : "com.cleveroad.bootstrap:kotlin-gps:$bootstrapVersion",
+            permissions: "com.cleveroad.bootstrap:kotlin-permissionrequest:$bootstrapVersion",
+            phoneInput : "com.cleveroad.bootstrap:kotlin-phone-input:$bootstrapVersion"
+    ]
+
+    retrofitVersion = '2.5.0'
+    retrofitDependencies = [
+            converter: "com.squareup.retrofit2:converter-jackson:$retrofitVersion",
+            adapter  : "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion",
+            retrofit : "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    ]
+
+    jacksonVersion = '2.9.9'
+    okHttpLoggingVersion = '3.14.2'
+    jacksonDependencies = [
+            joda       : "com.fasterxml.jackson.datatype:jackson-datatype-joda:$jacksonVersion",
+            annotations: "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
+            databind   : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+            core       : "com.fasterxml.jackson.core:jackson-core:$jacksonVersion",
+            interceptor: "com.squareup.okhttp3:logging-interceptor:$okHttpLoggingVersion"
+    ]
+
+    stethoVersion = "1.5.0"
+    stethoDependencies = [
+            lib: "com.facebook.stetho:stetho:$stethoVersion"
+    ]
+
+    securePreferencesVersion = '0.1.7'
+    securePreferencesDependencies = [
+            lib: "com.scottyab:secure-preferences-lib:$securePreferencesVersion"
+    ]
+
+    placesClientVersion = "1.1.0"
+    googleServicesDependencies = [
+            places: "com.google.android.libraries.places:places:$placesClientVersion"
+    ]
+
+    glide_version = '4.9.0'
+    glideDependencies = [
+            glide   : "com.github.bumptech.glide:glide:$glide_version",
+            compiler: "com.github.bumptech.glide:glide:$glide_version",
+    ]
+
+    ankoVersion = "0.10.8"
+    ankoDependencies = [
+            lib    : "org.jetbrains.anko:anko:$ankoVersion",
+            commons: "org.jetbrains.anko:anko-commons:$ankoVersion",
+            common : "org.jetbrains.anko:anko-common:$ankoVersion"
+    ]
+
+    rxPermissionsVersion = '0.10.2'
+    rxPermissionsDependencies = [
+            lib: "com.github.tbruyelle:rxpermissions:$rxPermissionsVersion"
+    ]
+
+    gms_services_maps = '16.1.0'
+    maps_utils = '0.5'
+    googleMapDependencies = [
+            gms_services : "com.google.android.gms:play-services-maps:$gms_services_maps",
+            maps_utils   : "com.google.maps.android:android-maps-utils:$maps_utils"
+    ]
+
+    ucrop_version = '2.2.3-native'
+    ucropDependencies = [
+            lib: "com.github.yalantis:ucrop:$ucrop_version"
+    ]
+
+    okHttpprofilerVersion = '1.0.5'
+    okHttpprofilerDependencies = [
+            lib: "com.itkacher.okhttpprofiler:okhttpprofiler:$okHttpprofilerVersion"
+    ]
+
+    loggingInterceptorVersion = '3.0.0'
+    loggingInterceptorDependencies = [
+            lib: "com.github.ihsanbal:LoggingInterceptor:$loggingInterceptorVersion"
+    ]
+}
