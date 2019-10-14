@@ -11,6 +11,7 @@ import android.util.Log
 import com.zalesskyi.android.blechat.ADVERTISE_TIMEOUT_MILLIS
 import com.zalesskyi.android.blechat.CHARACTERISTIC_MESSAGE_UUID
 import com.zalesskyi.android.blechat.CHAT_SERVICE_UUID
+import com.zalesskyi.android.blechat.bluetooth.ble.ADVERTISING_FAILED
 import com.zalesskyi.android.blechat.bluetooth.ble.ADVERTISING_NOT_SUPPORTED
 import com.zalesskyi.android.blechat.bluetooth.ble.BleProvider
 import com.zalesskyi.android.blechat.bluetooth.ble.BleProviderCallback
@@ -46,7 +47,7 @@ class PeripheralBleProvider(context: Context,
         }
 
         override fun onStartFailure(errorCode: Int) {
-            Log.i(TAG, "advertising failure")
+            callbackRef.get()?.onConnectionFail(ADVERTISING_FAILED)
         }
     }
 

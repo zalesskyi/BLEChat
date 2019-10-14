@@ -27,7 +27,7 @@ ext {
             rxKotlin: "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
     ]
 
-    bootstrapVersion = "1.0.6"
+    bootstrapVersion = "2.0.0"
     bootstrapDependencies = [
             core       : "com.cleveroad.bootstrap:kotlin-core:$bootstrapVersion",
             validators : "com.cleveroad.bootstrap:kotlin-validators:$bootstrapVersion",

@@ -3,21 +3,23 @@ package com.zalesskyi.android.blechat.screens
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import com.cleveroad.bootstrap.kotlin_core.ui.BaseLifecycleActivity
-import com.cleveroad.bootstrap.kotlin_core.ui.NO_ID
+import com.cleveroad.bootstrap.kotlin_core.ui.*
 import com.google.android.material.snackbar.Snackbar
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.zalesskyi.android.blechat.R
 import com.zalesskyi.android.blechat.bluetooth.BluetoothProvider
 import com.zalesskyi.android.blechat.bluetooth.BluetoothProviderImpl
 import com.zalesskyi.android.blechat.bluetooth.ble.BleMode
-import kotlinx.android.synthetic.main.activity_main.*
+import com.zalesskyi.android.blechat.screens.pairing.PairingCallback
+import com.zalesskyi.android.blechat.screens.pairing.tabs.PairingTabsFragment
 
-class MainActivity : BaseLifecycleActivity<MainVM>() {
-    override val containerId = NO_ID
+class MainActivity : BaseLifecycleActivity<MainVM>(),
+    BlockedCallback,
+    BackPressedCallback,
+    BottomNavigationCallback,
+    PairingCallback {
+
+    override val containerId = R.id.flContainer
 
     override val layoutId = R.layout.activity_main
 
@@ -29,34 +31,11 @@ class MainActivity : BaseLifecycleActivity<MainVM>() {
 
     private var bluetoothProvider: BluetoothProvider? = null
 
-    private val messageObserver = Observer<String> {
-        Toast.makeText(this@MainActivity, "New message: $it", Toast.LENGTH_SHORT).show()
-    }
-
-    private val advertisingNotSupportedObserver = Observer<Unit> {
-        Toast.makeText(this@MainActivity, "Advertising not supported", Toast.LENGTH_SHORT).show()
-    }
-
-    private val connectedObserver = Observer<Unit> {
-        Toast.makeText(this@MainActivity, "Connected", Toast.LENGTH_SHORT).show()
-    }
-
-    private val disconnectedObserver = Observer<Unit> {
-        Toast.makeText(this@MainActivity, "Disconnected", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun observeLiveData(viewModel: MainVM) = viewModel.run {
-        messageReceivedLD.observe(this@MainActivity, messageObserver)
-        advertisingNotSupportedLD.observe(this@MainActivity, advertisingNotSupportedObserver)
-        connectedLD.observe(this@MainActivity, connectedObserver)
-        disconnectedLD.observe(this@MainActivity, disconnectedObserver)
-    }
+    override fun observeLiveData() = Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        initUi()
-        viewModel.handleBluetoothEvents()
+        replaceFragment(PairingTabsFragment.newInstance(), false)
     }
 
     override fun onStop() {
@@ -64,11 +43,22 @@ class MainActivity : BaseLifecycleActivity<MainVM>() {
         super.onStop()
     }
 
-    private fun initUi() {
-        bScan.setOnClickListener { startScanning() }
-        bAdvertise.setOnClickListener { startAdvertising() }
-        bSend.setOnClickListener { viewModel.sendMessage("Hello") }
+    override fun connect(mode: BleMode) {
+        when (mode) {
+            BleMode.CENTRAL -> startScanning()
+            BleMode.PERIPHERAL -> startAdvertising()
+        }
     }
+
+    override fun stopLookForConnection() {
+        bluetoothProvider?.stopLookForConnection()
+    }
+
+    override fun openChatScreen() {
+        // todo
+    }
+
+    override fun onBlocked() = Unit
 
     @SuppressLint("CheckResult")
     private fun startScanning() {

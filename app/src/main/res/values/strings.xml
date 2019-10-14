@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">BLEChat</string>
+
+    <string name="advertising_not_supported">Advertising is not supported on this device</string>
+    <string name="connected">Connected</string>
+
+    <string name="peripheral_mode">Peripheral mode</string>
+    <string name="central_mode">Central mode</string>
+
+    <string name="start_advertising">Tap to start advertising</string>
+    <string name="start_scanning">Tap to start scanning</string>
+
+    <string name="advertising_in_process">Advertising in process</string>
+    <string name="scanning_in_process">Scanning in process</string>
 </resources>
