@@ -2,9 +2,6 @@ package com.zalesskyi.android.blechat.bluetooth
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import com.cleveroad.bootstrap.kotlin_rx_bus.RxBus
 import com.zalesskyi.android.blechat.bluetooth.ble.*
 import com.zalesskyi.android.blechat.bluetooth.ble.central.CentralBleProvider
@@ -15,6 +12,8 @@ interface BluetoothProvider {
 
     fun connecting()
 
+    fun stopLookForConnection()
+
     fun stopConnecting()
 }
 
@@ -24,7 +23,7 @@ class BluetoothProviderImpl(mode: BleMode, context: Context) : BluetoothProvider
 
         override fun onConnectionFail(errorCode: Int) {
             when (errorCode) {
-                SCAN_FAILED, GATT_SERVICE_NOT_FOUND -> reconnect()
+                SCAN_FAILED, ADVERTISING_FAILED, GATT_SERVICE_NOT_FOUND -> reconnect()
                 ADVERTISING_NOT_SUPPORTED -> dispatchAdvertisingNotSupportedEvent()
             }
         }
@@ -52,6 +51,10 @@ class BluetoothProviderImpl(mode: BleMode, context: Context) : BluetoothProvider
 
     override fun connecting() {
         bleProvider?.lookForConnection()
+    }
+
+    override fun stopLookForConnection() {
+        bleProvider?.stopLookForConnection()
     }
 
     override fun stopConnecting() {
