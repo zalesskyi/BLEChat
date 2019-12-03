@@ -10,6 +10,7 @@ ext {
     material = "1.1.0-alpha06"
     constraintlayoutVersion = "1.1.3"
     multiDexVersion = "2.0.1"
+    joda_time_version = '2.10.2'
     supportDependencies = [
             kotlin            : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
             appCompat         : "androidx.appcompat:appcompat:$supportVersion",
@@ -53,6 +54,10 @@ ext {
             databind   : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
             core       : "com.fasterxml.jackson.core:jackson-core:$jacksonVersion",
             interceptor: "com.squareup.okhttp3:logging-interceptor:$okHttpLoggingVersion"
+    ]
+
+    jodaDependencies = [
+            time: "joda-time:joda-time:$joda_time_version"
     ]
 
     stethoVersion = "1.5.0"
