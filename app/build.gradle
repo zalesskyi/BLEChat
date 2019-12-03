@@ -52,4 +52,7 @@ dependencies {
     // RxJava
     implementation rootProject.ext.rxDependencies.rxJava2
     implementation rootProject.ext.rxDependencies.rxKotlin
+
+    implementation project(':domain')
+    implementation project(':data')
 }

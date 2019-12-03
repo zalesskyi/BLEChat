@@ -6,7 +6,7 @@ import com.cleveroad.bootstrap.kotlin_rx_bus.RxBus
 import com.zalesskyi.android.blechat.bluetooth.ble.*
 import com.zalesskyi.android.blechat.bluetooth.ble.central.CentralBleProvider
 import com.zalesskyi.android.blechat.bluetooth.ble.peripheral.PeripheralBleProvider
-import com.zalesskyi.android.blechat.bluetooth.events.*
+import com.zalesskyi.android.data.models.events.*
 
 interface BluetoothProvider {
 
