@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.cleveroad.bootstrap.kotlin_core.ui.BaseLifecycleViewModel
 import com.cleveroad.bootstrap.kotlin_rx_bus.RxBus
-import com.zalesskyi.android.blechat.bluetooth.events.AdvertisingNotSupportedEvent
-import com.zalesskyi.android.blechat.bluetooth.events.ConnectedEvent
-import com.zalesskyi.android.blechat.bluetooth.events.DisconnectedEvent
+import com.zalesskyi.android.data.models.events.AdvertisingNotSupportedEvent
+import com.zalesskyi.android.data.models.events.ConnectedEvent
+import com.zalesskyi.android.data.models.events.DisconnectedEvent
 
 class PairingVM(application: Application) : BaseLifecycleViewModel(application) {
 

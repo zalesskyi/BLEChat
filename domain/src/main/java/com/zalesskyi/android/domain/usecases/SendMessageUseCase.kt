@@ -16,5 +16,5 @@ class SendMessageUseCaseImpl : SendMessageUseCase {
 
     override fun sendMessage(message: Message): Single<Message> =
         Single.just(message)
-            .doOnSuccess { gateway.sendMessage(it) }
+            .flatMap { gateway.sendMessage(it) }
 }

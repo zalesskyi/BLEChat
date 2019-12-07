@@ -7,6 +7,7 @@ import com.zalesskyi.android.data.converters.MessageBeanConverter
 import com.zalesskyi.android.data.converters.MessageBeanConverterImpl
 import com.zalesskyi.android.data.models.Message
 import com.zalesskyi.android.data.models.events.MessageReceivedEvent
+import com.zalesskyi.android.data.models.events.MessageSentEvent
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -27,7 +28,7 @@ object BluetoothGatewayImpl : BluetoothGateway {
         Single.just(message)
             .compose(converter.singleOUTtoIN())
             .map { mapper.writeValueAsString(it) }
-            .doOnSuccess { RxBus.send(it) }
+            .doOnSuccess { RxBus.send(MessageSentEvent(it)) }
             .map { message }
 
     override fun receiveMessage(): Flowable<Message> =

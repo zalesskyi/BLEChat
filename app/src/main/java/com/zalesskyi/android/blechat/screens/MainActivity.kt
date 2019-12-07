@@ -10,6 +10,7 @@ import com.zalesskyi.android.blechat.R
 import com.zalesskyi.android.blechat.bluetooth.BluetoothProvider
 import com.zalesskyi.android.blechat.bluetooth.BluetoothProviderImpl
 import com.zalesskyi.android.blechat.bluetooth.ble.BleMode
+import com.zalesskyi.android.blechat.screens.chat.ChatFragment
 import com.zalesskyi.android.blechat.screens.pairing.PairingCallback
 import com.zalesskyi.android.blechat.screens.pairing.tabs.PairingTabsFragment
 
@@ -55,7 +56,7 @@ class MainActivity : BaseLifecycleActivity<MainVM>(),
     }
 
     override fun openChatScreen() {
-        // todo
+        replaceFragment(ChatFragment.newInstance())
     }
 
     override fun onBlocked() = Unit
