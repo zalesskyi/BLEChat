@@ -18,9 +18,7 @@ class ChatFragment : BaseFragment<ChatVM>() {
     override val layoutId = R.layout.fragment_chat
     override val viewModelClass = ChatVM::class.java
 
-    private val messageObserver = Observer<Message> {
-
-    }
+    private val messageObserver = Observer<Message> { }
 
     private var adapter: MessagesAdapter? = null
 
